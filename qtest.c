@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 /* Our program needs to use regular malloc/free */
 #define INTERNAL 1
@@ -41,10 +42,13 @@ int big_queue_size = BIG_QUEUE;
 
 /* Queue being tested */
 queue_t *q = NULL;
+
+/* struct list_head being tested */
 struct list_head *list = NULL;
 
 /* Number of elements in queue */
 size_t qcnt = 0;
+size_t listcnt = 0;
 
 /* How many times can queue operations fail */
 int fail_limit = BIG_QUEUE;
@@ -63,6 +67,9 @@ bool do_remove_head_quiet(int argc, char *argv[]);
 bool do_reverse(int argc, char *argv[]);
 bool do_size(int argc, char *argv[]);
 bool do_show(int argc, char *argv[]);
+
+static bool show_list(int vlevel);
+bool do_show_list(int argc, char *argv[]);
 
 static void queue_init();
 
@@ -86,6 +93,7 @@ static void console_init()
     add_cmd("size", do_size,
             " [n]            | Compute queue size n times (default: n == 1)");
     add_cmd("show", do_show, "                | Show queue contents");
+    add_cmd("show list", do_show_list, "                | Show list contents");
     add_param("length", &string_length, "Maximum length of displayed string",
               NULL);
     add_param("malloc", &fail_probability, "Malloc failure probability percent",
@@ -112,6 +120,21 @@ bool do_new(int argc, char *argv[])
     qcnt = 0;
     show_queue(3);
     return ok && !error_check();
+}
+
+bool do_new_list (int argc, char *argv[])
+{
+    if (argc != 1) {
+        report(1, "%s takes no argument.", argv[0]);
+        return false;
+    } if (q != NULL) {
+        /* list_free() to be implemented */
+        assert(q != NULL);
+    }
+    list = malloc(sizeof(struct list_head));
+    INIT_LIST_HEAD (list);
+    show_list(3);
+    return true;
 }
 
 bool do_free(int argc, char *argv[])
@@ -462,6 +485,19 @@ static bool show_queue(int vlevel)
     return ok;
 }
 
+static bool show_list(int vlebel)
+{
+    if (!list) {
+        /* to be implemented */
+        assert(list != NULL);
+    }
+    struct list_head *node;
+    list_for_each (node, list) {
+        printf ("prev : %p\tcurrent : %p\tnext : %p\n", node->prev, node, node->next);
+    }
+    return true;
+}
+
 bool do_show(int argc, char *argv[])
 {
     if (argc != 1) {
@@ -469,6 +505,15 @@ bool do_show(int argc, char *argv[])
         return false;
     }
     return show_queue(0);
+}
+
+bool do_show_list(int argc, char *argv[])
+{
+    if (argc != 1) {
+        report(1, "%s takes no arguments", argv[0]);
+        return false;
+    }
+    return show_list(0);
 }
 
 /* Signal handlers */
