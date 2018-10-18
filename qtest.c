@@ -22,7 +22,7 @@
   code
 */
 #include "queue.h"
-
+#include "list.h"
 #include "console.h"
 #include "report.h"
 
@@ -41,6 +41,8 @@ int big_queue_size = BIG_QUEUE;
 
 /* Queue being tested */
 queue_t *q = NULL;
+struct list_head *list = NULL;
+
 /* Number of elements in queue */
 size_t qcnt = 0;
 

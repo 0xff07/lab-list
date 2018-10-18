@@ -11,8 +11,8 @@ $(GIT_HOOKS):
 queue.o: queue.c queue.h harness.h
 	$(CC) $(CFLAGS) -c queue.c 
 
-qtest: qtest.c report.c console.c harness.c queue.o
-	$(CC) $(CFLAGS) -o qtest qtest.c report.c console.c harness.c queue.o
+qtest: qtest.c report.c console.c harness.c list.h queue.o
+	$(CC) $(CFLAGS) -o qtest qtest.c report.c console.c harness.c list.h queue.o
 
 test: qtest scripts/driver.py
 	scripts/driver.py
